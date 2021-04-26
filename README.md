@@ -7,7 +7,7 @@ yarn add @flayyer/variables
 ```
 
 ```tsx
-import { Variable as V, ToVariables } from "@flayyer/variables";
+import { Variable as V, AsVariables } from "@flayyer/variables";
 
 /**
  * Export `getFlayyerSchema` to make variables visible on https://flayyer.com/
@@ -25,7 +25,7 @@ export const getFlayyerSchema = () => {
   return { schema };
 }
 
-type Variables = ToVariables<typeof getFlayyerSchema>;
+type Variables = AsVariables<typeof getFlayyerSchema>;
 
 export default function Template(props: TemplateProps<Variables>) {
   const title = props.variables["title"];

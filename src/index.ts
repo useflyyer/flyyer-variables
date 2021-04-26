@@ -45,7 +45,7 @@ export type Static<T> = TypeBoxStatic<T>;
 
 /**
  * @example
- * import { Variable as V, ToVariables } from "@flayyer/variables";
+ * import { Variable as V, AsVariables } from "@flayyer/variables";
  * export const getFlayyerSchema = async () => {
  *   const schema = V.Object({
  *     title: V.String({ description: "Displayed on https://flayyer.com" }),
@@ -60,13 +60,13 @@ export type Static<T> = TypeBoxStatic<T>;
  *   });
  *   return { schema };
  * };
- * type Variables = ToVariables<typeof getFlayyerSchema>;
+ * type Variables = AsVariables<typeof getFlayyerSchema>;
  * export default function Template(props: TemplateProps<Variables>) {
  *   const { title, description, image } = props.variables;
  *   // ...
  * }
  */
-export type ToVariables<T> = T extends () => Promise<{ schema: infer U }>
+export type AsVariables<T> = T extends () => Promise<{ schema: infer U }>
   ? Static<U>
   : T extends () => { schema: infer U }
   ? Static<U>

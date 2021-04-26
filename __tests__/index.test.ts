@@ -1,6 +1,6 @@
 // import { TemplateProps } from "@flayyer/flayyer-types";
 
-import { Variable as V, Static, ToVariables } from "../src";
+import { Variable as V, Static, AsVariables } from "../src";
 
 describe("Variable", () => {
   it("produces JSON Schema output", () => {
@@ -71,7 +71,7 @@ describe("Variable", () => {
       );
       return { schema };
     };
-    type Variables = ToVariables<typeof getFlayyerSchema>;
+    type Variables = AsVariables<typeof getFlayyerSchema>;
 
     const variables: Variables = {
       title: "Title",
@@ -94,7 +94,7 @@ describe("Variable", () => {
       });
       return { schema };
     };
-    type Variables = ToVariables<typeof getFlayyerSchema>;
+    type Variables = AsVariables<typeof getFlayyerSchema>;
 
     const variables: Variables = {
       title: "Title",
