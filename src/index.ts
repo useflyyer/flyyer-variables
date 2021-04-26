@@ -12,7 +12,7 @@ export class Validator<D> {
   /** Schema key */
   public readonly key = "flayyer-variables";
 
-  public constructor(schema: /*Schema |*/ JSONSchemaType<D>, options: Options) {
+  public constructor(schema: /*Schema |*/ JSONSchemaType<D>, options?: Options) {
     this.ajv = new Ajv({
       coerceTypes: "array",
       strict: false,
