@@ -5,6 +5,14 @@ import Ajv, { Options, Schema, ValidateFunction } from "ajv";
 /**
  * Create an extended instance of AJV with better support for @flayyer/variables.
  * @see Website https://ajv.js.org/
+ * @example
+ * import { Variable as V, Static, Validator } from "@flayyer/validator";
+ * export const schema = V.Object({
+ *   number: V.Optional(V.Integer({ default: 32 })),
+ * });
+ * const validator = new Validator(schema);
+ * validator.parse({ number: "42" }).data["number"] === 42 // true
+ * validator.parse().data["number"] === 32 // true
  */
 export class Validator<U extends Schema, D extends Static<U>> {
   /** Cached instance of AJV */

@@ -1,5 +1,3 @@
-// import { TemplateProps } from "@flayyer/flayyer-types";
-
 import { Variable as V, Static, Validator } from "../src";
 
 describe("Validator", () => {
@@ -15,6 +13,21 @@ describe("Validator", () => {
       expect(variables.number === 2).toEqual(true); // No type error here ✅
     } else {
       throw new Error("Fails");
+    }
+  });
+
+  it("on invalid input it keeps variable but isValid is false", () => {
+    const validator = new Validator(schema);
+    const variables: unknown = { number: "foo" };
+    const { data, isValid } = validator.parse(variables);
+    expect(isValid).toBe(false);
+    expect(data).toHaveProperty("number", "foo");
+
+    if (validator.validate(variables)) {
+      throw new Error("Shouldn't be here");
+    } else {
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(variables).toHaveProperty("number", "foo");
     }
   });
 
