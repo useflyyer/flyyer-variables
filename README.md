@@ -7,25 +7,22 @@ yarn add @flayyer/variables
 ```
 
 ```tsx
-import { Variable as V, AsVariables } from "@flayyer/variables";
+import { Variable as V, Static } from "@flayyer/variables";
 
 /**
- * Export `getFlayyerSchema` to make variables visible on https://flayyer.com/
+ * Export `const schema = V.Object({})` to make variables visible on https://flayyer.com/
  */
-export const getFlayyerSchema = () => {
-  const schema = V.Object({
-    title: V.String({ description: "Displayed on https://flayyer.com" }),
-    description: V.Optional(V.String()),
-    image: V.Optional(V.String({
-      description: "Image URL",
-      contentMediaType: "image/*",
-      examples: ["https://flayyer.com/logo.png"],
-    })),
-  });
-  return { schema };
-}
+export const schema = V.Object({
+  title: V.String({ description: "Displayed on https://flayyer.com" }),
+  description: V.Optional(V.String()),
+  image: V.Optional(V.String({
+    description: "Image URL",
+    contentMediaType: "image/*",
+    examples: ["https://flayyer.com/logo.png"],
+  })),
+});
 
-type Variables = AsVariables<typeof getFlayyerSchema>;
+type Variables = Static<typeof schema>;
 
 export default function Template(props: TemplateProps<Variables>) {
   const title = props.variables["title"];

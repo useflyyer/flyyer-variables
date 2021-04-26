@@ -8,7 +8,6 @@ export class VariableBuilder extends TypeBuilder {}
  *
  * @example
  * import { Variable as V, Static } from "@flayyer/variables";
- *
  * export const schema = V.Object({
  *   title: V.String({ description: "Displayed on https://flayyer.com" }),
  *   description: V.Optional(V.String()),
@@ -29,45 +28,21 @@ export const Variable = new VariableBuilder();
 /**
  * @example
  * import { Variable as V, Static } from "@flayyer/variables";
- *
- * const schema = V.Object({
+ * export const schema = V.Object({
  *   title: V.String({ description: "Displayed on https://flayyer.com" }),
  *   description: V.Optional(V.String()),
- *   image: V.Optional(V.String({
- *     description: "Image URL",
- *     contentMediaType: "image/*",
- *     examples: ["https://flayyer.com/logo.png"],
- *   })),
+ *   image: V.Optional(
+ *     V.String({
+ *       description: "Image URL",
+ *       contentMediaType: "image/*",
+ *       examples: ["https://flayyer.com/logo.png"],
+ *     }),
+ *   ),
  * });
  * type Variables = Static<typeof schema>;
- */
-export type Static<T> = TypeBoxStatic<T>;
-
-/**
- * @example
- * import { Variable as V, AsVariables } from "@flayyer/variables";
- * export const getFlayyerSchema = async () => {
- *   const schema = V.Object({
- *     title: V.String({ description: "Displayed on https://flayyer.com" }),
- *     description: V.Optional(V.String()),
- *     image: V.Optional(
- *       V.String({
- *         description: "Image URL",
- *         contentMediaType: "image/*",
- *         examples: ["https://flayyer.com/logo.png"],
- *       }),
- *     ),
- *   });
- *   return { schema };
- * };
- * type Variables = AsVariables<typeof getFlayyerSchema>;
  * export default function Template(props: TemplateProps<Variables>) {
  *   const { title, description, image } = props.variables;
  *   // ...
  * }
  */
-export type AsVariables<T> = T extends () => Promise<{ schema: infer U }>
-  ? Static<U>
-  : T extends () => { schema: infer U }
-  ? Static<U>
-  : Static<T>;
+export type Static<T> = TypeBoxStatic<T>;

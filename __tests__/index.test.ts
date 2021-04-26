@@ -1,6 +1,6 @@
 // import { TemplateProps } from "@flayyer/flayyer-types";
 
-import { Variable as V, Static, AsVariables } from "../src";
+import { Variable as V, Static } from "../src";
 
 describe("Variable", () => {
   it("produces JSON Schema output", () => {
@@ -55,33 +55,8 @@ describe("Variable", () => {
   });
 
   it("infers type on async function", () => {
-    const getFlayyerSchema = async () => {
-      const schema = V.Strict(
-        V.Object({
-          title: V.String({ description: "Displayed on https://flayyer.com" }),
-          description: V.Optional(V.String()),
-          image: V.Optional(
-            V.String({
-              description: "Image URL",
-              contentMediaType: "image/*",
-              examples: ["https://flayyer.com/logo.png"],
-            }),
-          ),
-        }),
-      );
-      return { schema };
-    };
-    type Variables = AsVariables<typeof getFlayyerSchema>;
-
-    const variables: Variables = {
-      title: "Title",
-    };
-    expect(variables).toHaveProperty("title", "Title");
-  });
-
-  it("infers type on sync function", () => {
-    const getFlayyerSchema = () => {
-      const schema = V.Object({
+    const schema = V.Strict(
+      V.Object({
         title: V.String({ description: "Displayed on https://flayyer.com" }),
         description: V.Optional(V.String()),
         image: V.Optional(
@@ -91,10 +66,29 @@ describe("Variable", () => {
             examples: ["https://flayyer.com/logo.png"],
           }),
         ),
-      });
-      return { schema };
+      }),
+    );
+    type Variables = Static<typeof schema>;
+
+    const variables: Variables = {
+      title: "Title",
     };
-    type Variables = AsVariables<typeof getFlayyerSchema>;
+    expect(variables).toHaveProperty("title", "Title");
+  });
+
+  it("infers type on sync function", () => {
+    const schema = V.Object({
+      title: V.String({ description: "Displayed on https://flayyer.com" }),
+      description: V.Optional(V.String()),
+      image: V.Optional(
+        V.String({
+          description: "Image URL",
+          contentMediaType: "image/*",
+          examples: ["https://flayyer.com/logo.png"],
+        }),
+      ),
+    });
+    type Variables = Static<typeof schema>;
 
     const variables: Variables = {
       title: "Title",
