@@ -26,7 +26,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.16.5"
+    "@sinclair/typebox": "^0.16.5",
+    "ajv": "^8.1.0"
   },
   "peerDependencies": {},
   "devDependencies": {
