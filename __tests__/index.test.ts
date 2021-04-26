@@ -2,7 +2,17 @@
 
 import { Variable as V, Static } from "../src";
 
-describe("Variable", () => {
+describe("Variable.Image", () => {
+  it("produces expected string property", () => {
+    const schema = V.Object({
+      image: V.Image({ description: "Just an image URL, on the dashboard allow file uploads" }),
+    });
+    expect(schema.properties.image.contentMediaType).toEqual("image/*");
+    expect(schema.properties.image.format).toEqual("uri-reference");
+  });
+});
+
+describe("Schema and typing", () => {
   it("produces JSON Schema output", () => {
     const flayyerTypes = V.Object({
       title: V.String({ description: "Show this on https://flayyer.com" }),
@@ -60,14 +70,14 @@ describe("Variable", () => {
         title: V.String({ description: "Displayed on https://flayyer.com" }),
         description: V.Optional(V.String()),
         image: V.Optional(
-          V.String({
+          V.Image({
             description: "Image URL",
-            contentMediaType: "image/*",
             examples: ["https://flayyer.com/logo.png"],
           }),
         ),
       }),
     );
+
     type Variables = Static<typeof schema>;
 
     const variables: Variables = {

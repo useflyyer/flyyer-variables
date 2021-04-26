@@ -1,10 +1,22 @@
-import { TypeBuilder } from "@sinclair/typebox";
-import type { Static as TypeBoxStatic } from "@sinclair/typebox";
+import { TypeBuilder, StringKind } from "@sinclair/typebox";
+import type { Static as TypeBoxStatic, TString, StringFormatOption, StringOptions } from "@sinclair/typebox";
 
-export class VariableBuilder extends TypeBuilder {}
+// Add more formats:
+// https://github.com/sinclairzx81/typebox/issues/43
+
+// Make `examples` an array of the respective type.
+
+export class VariableBuilder extends TypeBuilder {
+  /** EXTENDED: Intended for images URLs (relative or absolute). Creates and String schema with `{ contentMediaType: "image/*", format: "uri-reference" }` */
+  public Image<TCustomFormatOption extends string>(
+    options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
+  ): TString {
+    return { contentMediaType: "image/*", format: "uri-reference", ...options, kind: StringKind, type: "string" };
+  }
+}
 
 /**
- * Extends https://github.com/sinclairzx81/typebox and add additional types.
+ * Extends https://github.com/sinclairzx81/typebox and add additional types. See TypeBox repository for more information.
  *
  * @example
  * import { Variable as V, Static } from "@flayyer/variables";
