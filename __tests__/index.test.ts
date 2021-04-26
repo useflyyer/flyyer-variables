@@ -1,6 +1,30 @@
 // import { TemplateProps } from "@flayyer/flayyer-types";
 
-import { Variable as V, Static } from "../src";
+import { Variable as V, Static, Validator } from "../src";
+
+describe("Validator", () => {
+  const schema = V.Object({
+    number: V.Optional(V.Integer({ default: 32 })),
+  });
+
+  it("infers type and coarse types (parsing)", () => {
+    const validator = new Validator(schema);
+    const variables: unknown = { number: "2" };
+    if (validator.validate(variables)) {
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(variables.number === 2).toEqual(true); // No type error here ✅
+    } else {
+      throw new Error("Fails");
+    }
+  });
+
+  it("uses default value", () => {
+    const validator = new Validator(schema);
+    type Variables = Static<typeof schema>;
+    const vars: Variables = {}; // No type error here ✅
+    expect(validator.parse(vars)).toHaveProperty("data", { number: 32 });
+  });
+});
 
 describe("Variable.Image", () => {
   it("produces expected string property", () => {

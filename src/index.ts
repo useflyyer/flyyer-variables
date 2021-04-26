@@ -1,18 +1,18 @@
 import { TypeBuilder, StringKind } from "@sinclair/typebox";
 import type { Static as TypeBoxStatic, TString, StringFormatOption, StringOptions } from "@sinclair/typebox";
-import Ajv, { JSONSchemaType, Options, Schema, ValidateFunction } from "ajv";
+import Ajv, { Options, Schema, ValidateFunction } from "ajv";
 
 /**
  * Create an extended instance of AJV with better support for @flayyer/variables.
  * @see Website https://ajv.js.org/
  */
-export class Validator<D> {
+export class Validator<U extends Schema, D extends Static<U>> {
   /** Cached instance of AJV */
   public readonly ajv: Ajv;
   /** Schema key */
   public readonly key = "flayyer-variables";
 
-  public constructor(schema: /*Schema |*/ JSONSchemaType<D>, options?: Options) {
+  public constructor(schema: U, options?: Options) {
     this.ajv = new Ajv({
       coerceTypes: "array",
       strict: false,
