@@ -49,6 +49,15 @@ describe("Variable.Image", () => {
   });
 });
 
+describe("Variable.Font", () => {
+  it("produces expected string property", () => {
+    const schema = V.Object({
+      font: V.Font({ default: "Inter", examples: ["Roboto", "Avro"] }),
+    });
+    expect(schema.properties.font.contentMediaType).toEqual("font/*");
+  });
+});
+
 describe("Variable.DateTime, Variable.Date, Variable.Time", () => {
   it("produces expected string property", () => {
     const schema = V.Object({

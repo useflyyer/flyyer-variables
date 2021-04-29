@@ -104,6 +104,22 @@ export class VariableBuilder extends TypeBuilder {
     const format: StringFormatOption = "uri-reference";
     return { contentMediaType: "image/*", format, ...options, kind: StringKind, type: "string" };
   }
+
+  /**
+   * EXTENDED: Intended for fonts. Creates and String schema with `{ contentMediaType: "font/*" }`
+   * @example
+   * import { Variable as V, Validator } from "@flayyer/variables";
+   * export const schema = V.Object({
+   *   font: V.Font({ default: "Fira Code" }),
+   *   fonts: V.Array(V.Font(), { examples: [["Inter", "Roboto"]] }),
+   * });
+   */
+  public Font<TCustomFormatOption extends string>(
+    options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
+  ): TString {
+    return { contentMediaType: "font/*", ...options, kind: StringKind, type: "string" };
+  }
+
   /** EXTENDED: Prefer `DateTime` for better compatibility with `Date` class */
   public Date<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
@@ -111,6 +127,7 @@ export class VariableBuilder extends TypeBuilder {
     const format: StringFormatOption = "date";
     return { format, ...options, kind: StringKind, type: "string" };
   }
+
   /** EXTENDED: Prefer `DateTime` for better compatibility with `Date` class */
   public Time<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
@@ -118,14 +135,16 @@ export class VariableBuilder extends TypeBuilder {
     const format: StringFormatOption = "time";
     return { format, ...options, kind: StringKind, type: "string" };
   }
+
   /**
    * EXTENDED: Recommended for dates and times (and date-times). Note: parsed value will be a string, not a `Date`.
    * @example
+   * import { Variable as V, Validator } from "@flayyer/variables";
    * export const schema = V.Object({
    *   creation: V.DateTime({ examples: [new Date().toISOString()] })
-   * })
+   * });
    * const validator = new Validator(schema);
-   * const parsed = validator.parse(variables)
+   * const parsed = validator.parse(variables);
    * const date = new Date(parsed.data["creation"]);
    */
   public DateTime<TCustomFormatOption extends string>(
