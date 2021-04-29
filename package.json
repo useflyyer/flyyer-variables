@@ -27,7 +27,8 @@
   },
   "dependencies": {
     "@sinclair/typebox": "^0.16.5",
-    "ajv": "^8.2.0"
+    "ajv": "^8.2.0",
+    "ajv-formats": "^2.0.2"
   },
   "peerDependencies": {},
   "devDependencies": {

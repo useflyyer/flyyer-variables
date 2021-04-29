@@ -1,6 +1,7 @@
 import { TypeBuilder, StringKind } from "@sinclair/typebox";
 import type { Static as TypeBoxStatic, TString, StringFormatOption, StringOptions } from "@sinclair/typebox";
 import Ajv, { Options, Schema, ValidateFunction } from "ajv";
+import addFormats, { FormatsPluginOptions } from "ajv-formats";
 
 /**
  * Create an extended instance of AJV with better support for @flayyer/variables.
@@ -20,7 +21,7 @@ export class Validator<U extends Schema, D extends Static<U>> {
   /** Schema key */
   public readonly key = "flayyer-variables";
 
-  /** Default Ajv options */
+  /** Default options for https://github.com/ajv-validator/ajv */
   public static DEFAULT_OPTIONS: Options = {
     coerceTypes: "array",
     strict: false,
@@ -28,15 +29,24 @@ export class Validator<U extends Schema, D extends Static<U>> {
     removeAdditional: true,
     allErrors: true,
   };
+  /** Default options for https://github.com/ajv-validator/ajv-formats */
+  public static DEFAULT_FORMATS_OPTIONS: FormatsPluginOptions = {
+    mode: "fast",
+  };
 
-  public constructor(schema: U, options?: Options) {
-    this.ajv = new Ajv({
-      ...Validator.DEFAULT_OPTIONS,
-      ...options,
-    })
-      .addKeyword("kind")
-      .addKeyword("modifier")
-      .addSchema(schema, this.key);
+  public constructor(schema: U, options?: Options, formatOptions?: FormatsPluginOptions) {
+    this.ajv = addFormats(
+      new Ajv({
+        ...Validator.DEFAULT_OPTIONS,
+        ...options,
+      }),
+      {
+        ...Validator.DEFAULT_FORMATS_OPTIONS,
+        ...formatOptions,
+      },
+    );
+    this.ajv.addKeyword("kind").addKeyword("modifier");
+    this.ajv.addSchema(schema, this.key);
   }
 
   public getSchema() {
@@ -94,21 +104,21 @@ export class VariableBuilder extends TypeBuilder {
     const format: StringFormatOption = "uri-reference";
     return { contentMediaType: "image/*", format, ...options, kind: StringKind, type: "string" };
   }
-  /** EXTENDED */
+  /** EXTENDED: Prefer `DateTime` for better compatibility with `Date` class */
   public Date<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
   ): TString {
     const format: StringFormatOption = "date";
     return { format, ...options, kind: StringKind, type: "string" };
   }
-  /** EXTENDED */
+  /** EXTENDED: Prefer `DateTime` for better compatibility with `Date` class */
   public Time<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
   ): TString {
     const format: StringFormatOption = "time";
     return { format, ...options, kind: StringKind, type: "string" };
   }
-  /** EXTENDED */
+  /** EXTENDED: Recommended for dates and times (and date-times). */
   public DateTime<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
   ): TString {

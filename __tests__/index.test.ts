@@ -49,6 +49,29 @@ describe("Variable.Image", () => {
   });
 });
 
+describe("Variable.DateTime, Variable.Date, Variable.Time", () => {
+  it("produces expected string property", () => {
+    const schema = V.Object({
+      datetime: V.DateTime(),
+      date: V.Date(),
+      time: V.Time(),
+      optional: V.Optional(V.DateTime({ default: new Date() })),
+    });
+    expect(schema.properties.datetime.format).toEqual("date-time");
+    type Variables = Static<typeof schema>;
+    const variables: Variables = {
+      datetime: new Date().toISOString(),
+      date: "2021-12-30",
+      time: "20:20:39+00:00",
+    };
+    expect(variables).toHaveProperty("datetime");
+    const validator = new Validator(schema);
+    const validated = validator.parse(variables);
+    expect(validated.isValid).toBe(true);
+    expect(typeof validated.data.datetime).toBe("string");
+  });
+});
+
 describe("Schema and typing", () => {
   it("produces JSON Schema output", () => {
     const flayyerTypes = V.Object({
