@@ -118,7 +118,16 @@ export class VariableBuilder extends TypeBuilder {
     const format: StringFormatOption = "time";
     return { format, ...options, kind: StringKind, type: "string" };
   }
-  /** EXTENDED: Recommended for dates and times (and date-times). */
+  /**
+   * EXTENDED: Recommended for dates and times (and date-times). Note: parsed value will be a string, not a `Date`.
+   * @example
+   * export const schema = V.Object({
+   *   creation: V.DateTime({ examples: [new Date().toISOString()] })
+   * })
+   * const validator = new Validator(schema);
+   * const parsed = validator.parse(variables)
+   * const date = new Date(parsed.data["creation"]);
+   */
   public DateTime<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
   ): TString {
