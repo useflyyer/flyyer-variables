@@ -20,13 +20,18 @@ export class Validator<U extends Schema, D extends Static<U>> {
   /** Schema key */
   public readonly key = "flayyer-variables";
 
+  /** Default Ajv options */
+  public static DEFAULT_OPTIONS: Options = {
+    coerceTypes: "array",
+    strict: false,
+    useDefaults: true,
+    removeAdditional: true,
+    allErrors: true,
+  };
+
   public constructor(schema: U, options?: Options) {
     this.ajv = new Ajv({
-      coerceTypes: "array",
-      strict: false,
-      useDefaults: true,
-      removeAdditional: true,
-      allErrors: true,
+      ...Validator.DEFAULT_OPTIONS,
       ...options,
     })
       .addKeyword("kind")
@@ -86,7 +91,29 @@ export class VariableBuilder extends TypeBuilder {
   public Image<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
   ): TString {
-    return { contentMediaType: "image/*", format: "uri-reference", ...options, kind: StringKind, type: "string" };
+    const format: StringFormatOption = "uri-reference";
+    return { contentMediaType: "image/*", format, ...options, kind: StringKind, type: "string" };
+  }
+  /** EXTENDED */
+  public Date<TCustomFormatOption extends string>(
+    options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
+  ): TString {
+    const format: StringFormatOption = "date";
+    return { format, ...options, kind: StringKind, type: "string" };
+  }
+  /** EXTENDED */
+  public Time<TCustomFormatOption extends string>(
+    options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
+  ): TString {
+    const format: StringFormatOption = "time";
+    return { format, ...options, kind: StringKind, type: "string" };
+  }
+  /** EXTENDED */
+  public DateTime<TCustomFormatOption extends string>(
+    options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
+  ): TString {
+    const format: StringFormatOption = "date-time";
+    return { format, ...options, kind: StringKind, type: "string" };
   }
 }
 
