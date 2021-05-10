@@ -135,6 +135,23 @@ export class VariableBuilder extends TypeBuilder {
     return { contentMediaType: "font/*", ...options, kind: StringKind, type: "string" };
   }
 
+  /**
+   * EXTENDED: Intended for Emails addresses. Creates a String schema with `{ format: "email" }`
+   * @example
+   * import { Variable as V, Validator } from "@flayyer/variables";
+   * export const schema = V.Object({
+   *   email: V.Email({ examples: ["patricio@flayyer.com"] }),
+   * });
+   */
+  public Email<TCustomFormatOption extends string>(
+    options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
+  ): TString {
+    const format: StringFormatOption = "email";
+    return { format, ...options, kind: StringKind, type: "string" };
+  }
+
+  // TODO: Phone number and Address
+
   /** EXTENDED: Prefer `DateTime` for better compatibility with `Date` class */
   public Date<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},

@@ -39,6 +39,35 @@ describe("Validator", () => {
   });
 });
 
+describe("Variable.Email", () => {
+  it("produces expected string property", () => {
+    const schema = V.Object({
+      email: V.Email({}),
+    });
+    expect(schema.properties.email.format).toEqual("email");
+    type Variables = Static<typeof schema>;
+    const variables: Variables = {
+      email: "patricio@flayyer.com",
+    };
+    expect(variables).toHaveProperty("email");
+    const validator = new Validator(schema);
+    const validated = validator.parse(variables);
+    expect(validated.isValid).toBe(true);
+
+    const invalid = validator.parse({ email: "hello world" });
+    expect(invalid.isValid).toBe(false);
+  });
+});
+
+describe("Variable.URL", () => {
+  it("produces expected string property", () => {
+    const schema = V.Object({
+      url: V.URL({ description: "Just an URL" }),
+    });
+    expect(schema.properties.url.format).toEqual("uri-reference");
+  });
+});
+
 describe("Variable.Image", () => {
   it("produces expected string property", () => {
     const schema = V.Object({
