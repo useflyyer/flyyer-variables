@@ -97,7 +97,22 @@ export class Validator<U extends Schema, D extends Static<U>> {
 // Make `examples` an array of the respective type.
 
 export class VariableBuilder extends TypeBuilder {
-  /** EXTENDED: Intended for images URLs (relative or absolute). Creates and String schema with `{ contentMediaType: "image/*", format: "uri-reference" }` */
+  /**
+   * EXTENDED: Intended for URLs. Creates a String schema with `{ format: "uri-reference" }`
+   * @example
+   * import { Variable as V, Validator } from "@flayyer/variables";
+   * export const schema = V.Object({
+   *   url: V.URL({ default: "https://flayyer.com" }),
+   * });
+   */
+  public URL<TCustomFormatOption extends string>(
+    options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
+  ): TString {
+    const format: StringFormatOption = "uri-reference";
+    return { format, ...options, kind: StringKind, type: "string" };
+  }
+
+  /** EXTENDED: Intended for images URLs (relative or absolute). Creates a String schema with `{ format: "uri-reference", contentMediaType: "image/*" }` */
   public Image<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
   ): TString {
@@ -106,7 +121,7 @@ export class VariableBuilder extends TypeBuilder {
   }
 
   /**
-   * EXTENDED: Intended for fonts. Creates and String schema with `{ contentMediaType: "font/*" }`
+   * EXTENDED: Intended for fonts. Creates a String schema with `{ format: "uri-reference", contentMediaType: "font/*" }`
    * @example
    * import { Variable as V, Validator } from "@flayyer/variables";
    * export const schema = V.Object({
