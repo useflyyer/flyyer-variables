@@ -1,6 +1,6 @@
 {
   "name": "@flayyer/variables",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Helper module to create a `schema` that enables Flayyer to display template's variables on https://flayyer.com for decks and templates.",
   "keywords": [
     "flayyer"
