@@ -1,7 +1,26 @@
 import { TypeBuilder, StringKind } from "@sinclair/typebox";
-import type { Static as TypeBoxStatic, TString, StringFormatOption, StringOptions } from "@sinclair/typebox";
+import type {
+  Static as TypeBoxStatic,
+  StringFormatOption as StringFormatOptionBase,
+  StringOptions,
+  TString,
+} from "@sinclair/typebox";
 import Ajv, { Options, Schema, ValidateFunction } from "ajv";
 import addFormats, { FormatsPluginOptions } from "ajv-formats";
+
+/**
+ * Overrides default formats and add custom values.
+ */
+export type StringFormatOption =
+  // Base formats
+  | StringFormatOptionBase
+  // Non-standard definition same as VSCode
+  | "color-hex";
+
+/**
+ * Source: https://github.com/validatorjs/validator.js/blob/63b61629187a732c3b3c8d89fe4cacad890cad99/src/lib/isHexColor.js
+ */
+const REGEX_COLOR_HEX = /^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$/i;
 
 /**
  * Create an extended instance of AJV with better support for @flayyer/variables.
@@ -35,17 +54,18 @@ export class Validator<U extends Schema, D extends Static<U>> {
   };
 
   public constructor(schema: U, options?: Options, formatOptions?: FormatsPluginOptions) {
-    this.ajv = addFormats(
-      new Ajv({
-        ...Validator.DEFAULT_OPTIONS,
-        ...options,
-      }),
-      {
-        ...Validator.DEFAULT_FORMATS_OPTIONS,
-        ...formatOptions,
-      },
-    );
+    const instance = new Ajv({
+      ...Validator.DEFAULT_OPTIONS,
+      ...options,
+    });
+    this.ajv = addFormats(instance, {
+      ...Validator.DEFAULT_FORMATS_OPTIONS,
+      ...formatOptions,
+    });
     this.ajv.addKeyword("kind").addKeyword("modifier");
+    // Add custom formats
+    this.ajv.addFormat("color-hex", REGEX_COLOR_HEX);
+    // Finalize setup
     this.ajv.addSchema(schema, this.key);
   }
 
@@ -97,6 +117,12 @@ export class Validator<U extends Schema, D extends Static<U>> {
 // Make `examples` an array of the respective type.
 
 export class VariableBuilder extends TypeBuilder {
+  public String<TCustomFormatOption extends string>(
+    options?: StringOptions<StringFormatOption | TCustomFormatOption>,
+  ): TString {
+    return super.String(options);
+  }
+
   /**
    * EXTENDED: Intended for URLs. Creates a String schema with `{ format: "uri-reference" }`
    * @example
@@ -133,6 +159,24 @@ export class VariableBuilder extends TypeBuilder {
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
   ): TString {
     return { contentMediaType: "font/*", ...options, kind: StringKind, type: "string" };
+  }
+
+  /**
+   * EXTENDED: Intended for hexadecimal colors. Creates a String schema with `{ format: "color-hex" }`.
+   * @example
+   * import { Variable as V, Validator } from "@flayyer/variables";
+   * export const schema = V.Object({
+   *   color: V.Color({ default: "#FFFFFF" }),
+   *   colorWithAlpha: V.Color({ default: "#FFFFFF33" }),
+   * });
+   */
+  public ColorHex<TCustomFormatOption extends string>(
+    options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
+  ): TString {
+    const format: StringFormatOption = "color-hex";
+    // TODO: Conflicts having the pattern here.
+    // return { format, ...options, kind: StringKind, type: "string", pattern: REGEX_COLOR_HEX };
+    return { format, ...options, kind: StringKind, type: "string" };
   }
 
   /**
@@ -195,9 +239,8 @@ export class VariableBuilder extends TypeBuilder {
  * export const schema = V.Object({
  *   title: V.String({ description: "Displayed on https://flayyer.com" }),
  *   description: V.Optional(V.String()),
- *   image: V.Optional(V.String({
+ *   image: V.Optional(V.Image({
  *     description: "Image URL",
- *     contentMediaType: "image/*",
  *     examples: ["https://flayyer.com/logo.png"],
  *   })),
  * });
@@ -216,9 +259,8 @@ export const Variable = new VariableBuilder();
  *   title: V.String({ description: "Displayed on https://flayyer.com" }),
  *   description: V.Optional(V.String()),
  *   image: V.Optional(
- *     V.String({
+ *     V.Image({
  *       description: "Image URL",
- *       contentMediaType: "image/*",
  *       examples: ["https://flayyer.com/logo.png"],
  *     }),
  *   ),

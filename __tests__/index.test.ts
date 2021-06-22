@@ -1,5 +1,14 @@
 import { Variable as V, Static, Validator } from "../src";
 
+describe("StringFormatOption", () => {
+  it("allow custom 'formats'", () => {
+    const schema = V.Object({
+      property: V.String({ description: "'color-hex' is not standard JSON Schema but we use it", format: "color-hex" }),
+    });
+    expect(schema).toBeTruthy();
+  });
+});
+
 describe("Validator", () => {
   const schema = V.Object({
     number: V.Optional(V.Integer({ default: 32 })),
@@ -84,6 +93,31 @@ describe("Variable.Font", () => {
       font: V.Font({ default: "Inter", examples: ["Roboto", "Avro"] }),
     });
     expect(schema.properties.font.contentMediaType).toEqual("font/*");
+  });
+});
+
+describe("Variable.ColorHex", () => {
+  it("produces expected string property", () => {
+    const schema = V.Object({
+      color: V.ColorHex({ default: "#FFFFFF" }),
+      colorWithAlpha: V.Optional(V.ColorHex({})),
+    });
+    expect(schema.properties.color.format).toEqual("color-hex");
+    type Variables = Static<typeof schema>;
+    const variables: Variables = {
+      color: "#cc33AA",
+      colorWithAlpha: "#cc33AAFF",
+    };
+    const validator = new Validator(schema);
+    const validated = validator.parse(variables);
+    expect(validated.isValid).toBe(true);
+    expect(typeof validated.data.color).toBe("string");
+
+    const variablesWrong: Variables = {
+      color: "#cc33AA00000",
+    };
+    const validatedWrong = validator.parse(variablesWrong);
+    expect(validatedWrong.isValid).toBe(false);
   });
 });
 
