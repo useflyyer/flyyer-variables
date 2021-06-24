@@ -1,4 +1,4 @@
-import { TypeBuilder, StringKind } from "@sinclair/typebox";
+import { TypeBuilder, StringKind, TEnumType, CustomOptions, TEnum, EnumKind } from "@sinclair/typebox";
 import type {
   Static as TypeBoxStatic,
   StringFormatOption as StringFormatOptionBase,
@@ -117,10 +117,35 @@ export class Validator<U extends Schema, D extends Static<U>> {
 // Make `examples` an array of the respective type.
 
 export class VariableBuilder extends TypeBuilder {
+  // Overdrives
+
   public String<TCustomFormatOption extends string>(
     options?: StringOptions<StringFormatOption | TCustomFormatOption>,
   ): TString {
     return super.String(options);
+  }
+
+  // Extensions
+
+  /**
+   * EXTENDED: Alternative to `V.Enum` but when you want to **the keys of the enum**.
+   * @example
+   * import { Variable as V, Validator } from "@flayyer/variables";
+   * enum Alignment {
+   *   Y = "flex flex-col justify-center",
+   *   X = "flex flex-row justify-center",
+   * }
+   * export const schema = V.Object({
+   *   modes: V.EnumKeys(Alignment, { default: "X" }),
+   * });
+   */
+  public EnumKeys<T extends TEnumType>(item: T, options: CustomOptions = {}): TEnum<keyof T> {
+    const keys = Object.keys(item).filter((key) => isNaN(key as any)) as (keyof T)[];
+    // if (keys.length === 0) {
+    //   return { ...options, kind: EnumKind, enum: keys };
+    // }
+    const type = "string" as const;
+    return { ...options, kind: EnumKind, type, enum: keys };
   }
 
   /**

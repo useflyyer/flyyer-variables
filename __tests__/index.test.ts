@@ -48,6 +48,37 @@ describe("Validator", () => {
   });
 });
 
+describe("Variable.EnumKeys", () => {
+  it("produces expected properties", () => {
+    enum Alignment {
+      Y = "flex flex-col justify-center",
+      X = "flex flex-row justify-center",
+    }
+    const schema = V.Object({
+      keys: V.EnumKeys(Alignment, { default: "X" }),
+      values: V.Enum(Alignment, { default: Alignment.X }),
+    });
+    expect(schema.properties.keys).toMatchObject({
+      default: "X",
+      enum: ["Y", "X"],
+      type: "string",
+    });
+    expect(schema.properties.values).toMatchObject({
+      default: Alignment.X,
+      enum: [Alignment.Y, Alignment.X],
+      type: "string",
+    });
+    type Variables = Static<typeof schema>;
+    const variables: Variables = {
+      keys: "X",
+      values: Alignment.X,
+    };
+    const validator = new Validator(schema);
+    const validated = validator.parse(variables);
+    expect(validated.isValid).toBe(true);
+  });
+});
+
 describe("Variable.Email", () => {
   it("produces expected string property", () => {
     const schema = V.Object({
