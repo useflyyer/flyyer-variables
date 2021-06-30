@@ -93,6 +93,18 @@ Most common types with full Flayyer.com UI support are:
 
 You should be able to cover most cases with these types.
 
+## Provide example values
+
+On Flayyer.com many template previews are rendered using the first provided `examples` value of each property with fallback to `default`.
+
+**The `examples` property must be an array**
+
+```tsx
+export const schema = V.Object({
+  image: V.Image({ examples: ["https://flayyer.com/logo.png"] }),
+});
+```
+
 ## E-commerce
 
 For E-commerce templates you probably want to display the price and currency of a product. **Currently we haven't defined a proper `V.Price` and `V.Currency` methods yet. We recommended sticking with `price: V.Number` and `currency: V.String` until we have enough information to create those methods.**
