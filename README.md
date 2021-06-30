@@ -6,6 +6,15 @@ Helper module to create a `schema` that enables Flayyer to display template's va
 yarn add @flayyer/variables
 ```
 
+Some of our official free templates are using `@flayyer/variables`:
+
+* 🌠 flayyer.com/@/flayyer/simple-products
+  * Source-code: github.com/flayyer/flayyer-marketplace-simpleproducts
+* 🌠 flayyer.com/@/flayyer/nice-typography
+  * Source-code: github.com/flayyer/flayyer-marketplace-nicetypography
+* 🌠 flayyer.com/@/flayyer/branded
+  * Source-code: github.com/flayyer/flayyer-marketplace-brand
+
 Here is what a template with an exported `schema` looks like:
 
 ![Final result on flayyer.com dashboard](.github/assets/dashboard.png)
@@ -83,6 +92,47 @@ Most common types with full Flayyer.com UI support are:
 * `V.EnumKeys`
 
 You should be able to cover most cases with these types.
+
+## E-commerce
+
+For E-commerce templates you probably want to display the price and currency of a product. **Currently we haven't defined a proper `V.Price` and `V.Currency` methods yet. We recommended sticking with `price: V.Number` and `currency: V.String` until we have enough information to create those methods.**
+
+> Production example: https://github.com/flayyer/flayyer-marketplace-simpleproducts
+
+Example:
+
+```tsx
+import { Variable as V, Validator } from '@flayyer/variables';
+
+export const schema = V.Object({
+  currency: V.Optional(
+    V.String({ default: 'USD', examples: ['USD', 'EUR'] }),
+  ),
+  price: V.Optional(
+    V.Number({ examples: ['59.99'] }),
+  ),
+});
+const validator = new Validator(schema);
+
+// props are provided by our systems
+export default function Template({ variables, locale }) {
+  const { data: { currency, price } } = validator.parse(variables);
+
+  const formatter = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+    currencyDisplay: 'symbol'
+  });
+
+  if (Number.isFinite(price) && price === 0) {
+    return <p>Free</p>;
+  } else (Number.isFinite(price)) {
+    return <p>{formatter.format(price)}</p>
+  } else {
+    return null; // Do not display price if user sets input to null or blank,
+  }
+}
+```
 
 ## Enums
 
