@@ -46,6 +46,41 @@ describe("Validator", () => {
     const vars: Variables = {}; // No type error here ✅
     expect(validator.parse(vars)).toHaveProperty("data", { number: 32 });
   });
+
+  describe("additional properties", () => {
+    it("doesn't fails with additional properties", () => {
+      const additionalPropertiesFalse = V.Object(
+        {
+          title: V.String(),
+          description: V.Optional(V.String()),
+        },
+        { additionalProperties: false },
+      );
+      const additionalPropertiesTrue = V.Object(
+        {
+          title: V.String(),
+          description: V.Optional(V.String()),
+        },
+        { additionalProperties: true }, // default is `true`
+      );
+
+      const variables = {
+        title: "Title",
+        extra: "This is an extra value",
+      };
+
+      const validatorFalse = new Validator(additionalPropertiesFalse);
+      const validatedFalse = validatorFalse.parse(variables);
+      expect(validatedFalse.isValid).toBe(true);
+      expect(validatedFalse.data).toHaveProperty("title", "Title");
+      expect(validatedFalse.data).not.toHaveProperty("extra");
+
+      const validatorTrue = new Validator(additionalPropertiesTrue);
+      const validatedTrue = validatorTrue.parse(variables);
+      expect(validatedTrue.data).toHaveProperty("title", "Title");
+      expect(validatedTrue.data).toHaveProperty("extra", "This is an extra value");
+    });
+  });
 });
 
 describe("Variable.EnumKeys", () => {
@@ -204,7 +239,6 @@ describe("Schema and typing", () => {
 
     expect(flayyerTypes).toMatchObject({
       type: "object",
-      additionalProperties: false,
       properties: {
         title: {
           description: "Show this on https://flayyer.com",
