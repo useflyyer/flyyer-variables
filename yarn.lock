@@ -351,10 +351,10 @@
     eslint-plugin-vue "^7.10.0"
     vue-eslint-parser "^7.6.0"
 
-"@flyyer/types@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@flyyer/types/-/types-2.0.0.tgz#d0c40e2f268fb8f300e63a136c7a8e72080766ff"
-  integrity sha512-6X2ws7EqLTxtoxP0knBhjReE8nDjyV5AoVMa/wA9VvLyKru4ZtnwqK+sOsSWVEH/2CVmrkWoCSLUNFB5Zw3lkA==
+"@flyyer/types@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@flyyer/types/-/types-2.0.2.tgz#0298fa46cec31391d33e914e0471ff0b614022ef"
+  integrity sha512-Omlz4NjVw4joo8iu0LQBU0bRigz8zK/vP2gnxfgoFgjhsOCu0cccvGC8QL5fE68n0hUww4IYQvu/Pnl74FomRA==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"

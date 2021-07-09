@@ -33,7 +33,7 @@
   "peerDependencies": {},
   "devDependencies": {
     "@flyyer/eslint-config": "^2.0.1",
-    "@flyyer/types": "^2.0.0",
+    "@flyyer/types": "^2.0.2",
     "@types/jest": "^26.0.23",
     "esbuild": "^0.12.12",
     "eslint": "^7.29.0",
