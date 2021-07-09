@@ -23,10 +23,10 @@ export type StringFormatOption =
 const REGEX_COLOR_HEX = /^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$/i;
 
 /**
- * Create an extended instance of AJV with better support for @flayyer/variables.
+ * Create an extended instance of AJV with better support for @flyyer/variables.
  * @see Website https://ajv.js.org/
  * @example
- * import { Variable as V, Static, Validator } from "@flayyer/validator";
+ * import { Variable as V, Static, Validator } from "@flyyer/variables";
  * export const schema = V.Object({
  *   number: V.Optional(V.Integer({ default: 32 })),
  * });
@@ -38,7 +38,7 @@ export class Validator<U extends Schema, D extends Static<U>> {
   /** Cached instance of AJV */
   public readonly ajv: Ajv;
   /** Schema key */
-  public readonly key = "flayyer-variables";
+  public readonly key = "flyyer-variables";
 
   /** Default options for https://github.com/ajv-validator/ajv */
   public static DEFAULT_OPTIONS: Options = {
@@ -92,7 +92,7 @@ export class Validator<U extends Schema, D extends Static<U>> {
    *
    * This is a Type Guard, see example.
    * @example
-   * import { Variable as V, Validator } from "@flayyer/variables";
+   * import { Variable as V, Validator } from "@flyyer/variables";
    * export const schema = V.Object({ count: V.Integer({ default: 10 }) });
    * const validator = new Validator(schema);
    * export default function Template({ variables }) {
@@ -130,7 +130,7 @@ export class VariableBuilder extends TypeBuilder {
   /**
    * EXTENDED: Alternative to `V.Enum` but when you want to **the keys of the enum**.
    * @example
-   * import { Variable as V, Validator } from "@flayyer/variables";
+   * import { Variable as V, Validator } from "@flyyer/variables";
    * enum Alignment {
    *   Y = "flex flex-col justify-center",
    *   X = "flex flex-row justify-center",
@@ -151,9 +151,9 @@ export class VariableBuilder extends TypeBuilder {
   /**
    * EXTENDED: Intended for URLs. Creates a String schema with `{ format: "uri-reference" }`
    * @example
-   * import { Variable as V, Validator } from "@flayyer/variables";
+   * import { Variable as V, Validator } from "@flyyer/variables";
    * export const schema = V.Object({
-   *   url: V.URL({ default: "https://flayyer.com" }),
+   *   url: V.URL({ default: "https://flyyer.io" }),
    * });
    */
   public URL<TCustomFormatOption extends string>(
@@ -174,7 +174,7 @@ export class VariableBuilder extends TypeBuilder {
   /**
    * EXTENDED: Intended for fonts. Creates a String schema with `{ format: "uri-reference", contentMediaType: "font/*" }`
    * @example
-   * import { Variable as V, Validator } from "@flayyer/variables";
+   * import { Variable as V, Validator } from "@flyyer/variables";
    * export const schema = V.Object({
    *   font: V.Font({ default: "Fira Code" }),
    *   fonts: V.Array(V.Font(), { examples: [["Inter", "Roboto"]] }),
@@ -189,7 +189,7 @@ export class VariableBuilder extends TypeBuilder {
   /**
    * EXTENDED: Intended for hexadecimal colors. Creates a String schema with `{ format: "color-hex" }`.
    * @example
-   * import { Variable as V, Validator } from "@flayyer/variables";
+   * import { Variable as V, Validator } from "@flyyer/variables";
    * export const schema = V.Object({
    *   color: V.Color({ default: "#FFFFFF" }),
    *   colorWithAlpha: V.Color({ default: "#FFFFFF33" }),
@@ -207,9 +207,9 @@ export class VariableBuilder extends TypeBuilder {
   /**
    * EXTENDED: Intended for Emails addresses. Creates a String schema with `{ format: "email" }`
    * @example
-   * import { Variable as V, Validator } from "@flayyer/variables";
+   * import { Variable as V, Validator } from "@flyyer/variables";
    * export const schema = V.Object({
-   *   email: V.Email({ examples: ["patricio@flayyer.com"] }),
+   *   email: V.Email({ examples: ["patricio@flyyer.io"] }),
    * });
    */
   public Email<TCustomFormatOption extends string>(
@@ -240,7 +240,7 @@ export class VariableBuilder extends TypeBuilder {
   /**
    * EXTENDED: Recommended for dates and times (and date-times). Note: parsed value will be a string, not a `Date`.
    * @example
-   * import { Variable as V, Validator } from "@flayyer/variables";
+   * import { Variable as V, Validator } from "@flyyer/variables";
    * export const schema = V.Object({
    *   creation: V.DateTime({ examples: [new Date().toISOString()] })
    * });
@@ -260,13 +260,13 @@ export class VariableBuilder extends TypeBuilder {
  * Extends https://github.com/sinclairzx81/typebox and add additional types. See TypeBox repository for more information.
  *
  * @example
- * import { Variable as V, Static } from "@flayyer/variables";
+ * import { Variable as V, Static } from "@flyyer/variables";
  * export const schema = V.Object({
- *   title: V.String({ description: "Displayed on https://flayyer.com" }),
+ *   title: V.String({ description: "Displayed on https://flyyer.io" }),
  *   description: V.Optional(V.String()),
  *   image: V.Optional(V.Image({
  *     description: "Image URL",
- *     examples: ["https://flayyer.com/logo.png"],
+ *     examples: ["https://flyyer.io/logo.png"],
  *   })),
  * });
  * type Variables = Static<typeof schema>;
@@ -279,14 +279,14 @@ export const Variable = new VariableBuilder();
 
 /**
  * @example
- * import { Variable as V, Static } from "@flayyer/variables";
+ * import { Variable as V, Static } from "@flyyer/variables";
  * export const schema = V.Object({
- *   title: V.String({ description: "Displayed on https://flayyer.com" }),
+ *   title: V.String({ description: "Displayed on https://flyyer.io" }),
  *   description: V.Optional(V.String()),
  *   image: V.Optional(
  *     V.Image({
  *       description: "Image URL",
- *       examples: ["https://flayyer.com/logo.png"],
+ *       examples: ["https://flyyer.io/logo.png"],
  *     }),
  *   ),
  * });

@@ -122,7 +122,7 @@ describe("Variable.Email", () => {
     expect(schema.properties.email.format).toEqual("email");
     type Variables = Static<typeof schema>;
     const variables: Variables = {
-      email: "patricio@flayyer.com",
+      email: "patricio@flyyer.io",
     };
     expect(variables).toHaveProperty("email");
     const validator = new Validator(schema);
@@ -212,8 +212,8 @@ describe("Variable.DateTime, Variable.Date, Variable.Time", () => {
 
 describe("Schema and typing", () => {
   it("produces JSON Schema output", () => {
-    const flayyerTypes = V.Object({
-      title: V.String({ description: "Show this on https://flayyer.com" }),
+    const flyyerTypes = V.Object({
+      title: V.String({ description: "Show this on https://flyyer.io" }),
       count: V.Integer({ title: "Count of items" }),
       price: V.Number({ default: 10.0, examples: [0.0, 4.99] }),
       createdAt: V.Optional(V.String({ format: "date-time" })),
@@ -224,7 +224,7 @@ describe("Schema and typing", () => {
       array: V.Array(V.Number(), { description: "An array of numbers" }),
     });
 
-    type Variables = Static<typeof flayyerTypes>;
+    type Variables = Static<typeof flyyerTypes>;
     const variables: Variables = {
       title: "Title",
       count: 12,
@@ -237,11 +237,11 @@ describe("Schema and typing", () => {
     };
     expect(variables).toHaveProperty("title", "Title");
 
-    expect(flayyerTypes).toMatchObject({
+    expect(flyyerTypes).toMatchObject({
       type: "object",
       properties: {
         title: {
-          description: "Show this on https://flayyer.com",
+          description: "Show this on https://flyyer.io",
           // kind: Symbol(StringKind),
           type: "string",
         },
@@ -264,12 +264,12 @@ describe("Schema and typing", () => {
   it("infers type on async function", () => {
     const schema = V.Strict(
       V.Object({
-        title: V.String({ description: "Displayed on https://flayyer.com" }),
+        title: V.String({ description: "Displayed on https://flyyer.io" }),
         description: V.Optional(V.String()),
         image: V.Optional(
           V.Image({
             description: "Image URL",
-            examples: ["https://flayyer.com/logo.png"],
+            examples: ["https://flyyer.io/logo.png"],
           }),
         ),
       }),
@@ -285,13 +285,13 @@ describe("Schema and typing", () => {
 
   it("infers type on sync function", () => {
     const schema = V.Object({
-      title: V.String({ description: "Displayed on https://flayyer.com" }),
+      title: V.String({ description: "Displayed on https://flyyer.io" }),
       description: V.Optional(V.String()),
       image: V.Optional(
         V.String({
           description: "Image URL",
           contentMediaType: "image/*",
-          examples: ["https://flayyer.com/logo.png"],
+          examples: ["https://flyyer.io/logo.png"],
         }),
       ),
     });

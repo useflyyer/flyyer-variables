@@ -1,9 +1,9 @@
 {
-  "name": "@flayyer/variables",
+  "name": "@flyyer/variables",
   "version": "1.6.2",
-  "description": "Helper module to create a `schema` that enables Flayyer to display template's variables on https://flayyer.com for decks and templates.",
+  "description": "Helper module to create a `schema` that enables Flyyer to display template's variables on https://flyyer.io for decks and templates.",
   "keywords": [
-    "flayyer"
+    "flyyer"
   ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -12,10 +12,10 @@
   "files": [
     "dist"
   ],
-  "author": "Patricio López Juri <patricio@flayyer.com>",
+  "author": "Patricio López Juri <patricio@flyyer.io>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/flayyer/flayyer-variables.git"
+    "url": "https://github.com/useflyyer/flyyer-variables.git"
   },
   "license": "MIT",
   "scripts": {
@@ -32,8 +32,8 @@
   },
   "peerDependencies": {},
   "devDependencies": {
-    "@flayyer/eslint-config": "^1.1.3",
-    "@flayyer/flayyer-types": "^1.11.2",
+    "@flyyer/eslint-config": "^2.0.1",
+    "@flyyer/types": "^2.0.0",
     "@types/jest": "^26.0.23",
     "esbuild": "^0.12.12",
     "eslint": "^7.29.0",

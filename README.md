@@ -1,41 +1,41 @@
-# @flayyer/variables
+# @flyyer/variables
 
-Helper module to create a `schema` that enables Flayyer to display template's variables on https://flayyer.com for decks and templates.
+Helper module to create a `schema` that enables Flyyer to display template's variables on https://flyyer.io for decks and templates.
 
 ```sh
-yarn add @flayyer/variables
+yarn add @flyyer/variables
 ```
 
-Some of our official free templates are using `@flayyer/variables`:
+Some of our official free templates are using `@flyyer/variables`:
 
-* 🌠 flayyer.com/@/flayyer/simple-products
-  * Source-code: github.com/flayyer/flayyer-marketplace-simpleproducts
-* 🌠 flayyer.com/@/flayyer/nice-typography
-  * Source-code: github.com/flayyer/flayyer-marketplace-nicetypography
-* 🌠 flayyer.com/@/flayyer/branded
-  * Source-code: github.com/flayyer/flayyer-marketplace-brand
+* 🌠 flyyer.io/@/flyyer/simple-products
+  * Source-code: github.com/useflyyer/flyyer-marketplace-simpleproducts
+* 🌠 flyyer.io/@/flyyer/nice-typography
+  * Source-code: github.com/useflyyer/flyyer-marketplace-nicetypography
+* 🌠 flyyer.io/@/flyyer/branded
+  * Source-code: github.com/useflyyer/flyyer-marketplace-brand
 
 Here is what a template with an exported `schema` looks like:
 
-![Final result on flayyer.com dashboard](.github/assets/dashboard.png)
+![Final result on flyyer.io dashboard](.github/assets/dashboard.png)
 
 ## Usage
 
 ```tsx
-import { Variable as V, Static, Validator } from "@flayyer/variables";
+import { Variable as V, Static, Validator } from "@flyyer/variables";
 
 /**
- * Export `const schema = V.Object({})` to make variables visible on https://flayyer.com/
+ * Export `const schema = V.Object({})` to make variables visible on https://flyyer.io/
  */
 export const schema = V.Object({
-  title: V.String({ description: "Displayed on https://flayyer.com" }),
+  title: V.String({ description: "Displayed on https://flyyer.io" }),
   description: V.Optional(V.String()),
   image: V.Optional(V.Image({
     description: "Image URL",
-    examples: ["https://flayyer.com/logo.png"],
+    examples: ["https://flyyer.io/logo.png"],
   })),
   font: V.Optional(V.Font({
-    default: "Inter", // https://github.com/flayyer/use-googlefonts
+    default: "Inter", // https://github.com/useflyyer/use-googlefonts
   })),
 });
 const validator = new Validator(schema);
@@ -77,7 +77,7 @@ if (validator.validate(variables)) {
 
 ## Useful types
 
-Most common types with full Flayyer.com UI support are:
+Most common types with full flyyer.io UI support are:
 
 * `V.String`
 * `V.Integer`
@@ -95,13 +95,13 @@ You should be able to cover most cases with these types.
 
 ## Provide example values
 
-On Flayyer.com many template previews are rendered using the first provided `examples` value of each property with fallback to `default`.
+On flyyer.io many template previews are rendered using the first provided `examples` value of each property with fallback to `default`.
 
 **The `examples` property must be an array**
 
 ```tsx
 export const schema = V.Object({
-  image: V.Image({ examples: ["https://flayyer.com/logo.png"] }),
+  image: V.Image({ examples: ["https://flyyer.io/logo.png"] }),
 });
 ```
 
@@ -109,12 +109,12 @@ export const schema = V.Object({
 
 For E-commerce templates you probably want to display the price and currency of a product. **Currently we haven't defined a proper `V.Price` and `V.Currency` methods yet. We recommended sticking with `price: V.Number` and `currency: V.String` until we have enough information to create those methods.**
 
-> Production example: https://github.com/flayyer/flayyer-marketplace-simpleproducts
+> Production example: https://github.com/useflyyer/flyyer-marketplace-simpleproducts
 
 Example:
 
 ```tsx
-import { Variable as V, Validator } from '@flayyer/variables';
+import { Variable as V, Validator } from '@flyyer/variables';
 
 export const schema = V.Object({
   currency: V.Optional(
@@ -164,10 +164,10 @@ const schema = V.Object({
 });
 ```
 
-What is the difference? If you want to display the enum's key on the UI at Flayyer.com you should use `V.EnumKeys` which is more clear to the user.
+What is the difference? If you want to display the enum's key on the UI at flyyer.io you should use `V.EnumKeys` which is more clear to the user.
 
 ```ts
-// Let the user pick between "X" or "Y" on Flayyer.com UI.
+// Let the user pick between "X" or "Y" on flyyer.io UI.
 const schema = V.Object({
   alignment: V.EnumKeys(Alignment, { default: "X" }),
 });
@@ -175,10 +175,10 @@ const schema = V.Object({
 
 ## Recommendations
 
-JSON Schemas can be super complex and allow a lot of custom settings. In Flayyer.com we recommend sticking to a simple 1-level object for the better final user experience.
+JSON Schemas can be super complex and allow a lot of custom settings. In flyyer.io we recommend sticking to a simple 1-level object for the better final user experience.
 
 ```ts
-// ⚠️ Works via @flayyer/flayyer and code but not handled by Flayyer.com UI
+// ⚠️ Works via @flyyer/flyyer and code but not handled by flyyer.io UI
 export const schema = V.Object({
   title: V.Object({
     text: V.String(),
@@ -186,17 +186,17 @@ export const schema = V.Object({
     font: V.Font({ default: "Inter" }),
   })
 });
-/* https://flayyer.io/v2/tenant/deck/template?title[text]=Hello&title[font]=Roboto */
-/* https://flayyer.ai/v2/project/_/title[text]=Hello&title[font]=Roboto/path */
+/* https://cdn.flyyer.io/render/v2/tenant/deck/template?title[text]=Hello&title[font]=Roboto */
+/* https://cdn.flyyer.io/v2/project/_/title[text]=Hello&title[font]=Roboto/path */
 
-// ✅ Recommended! works via @flayyer/flayyer and Flayyer.com UI
+// ✅ Recommended! works via @flyyer/flyyer and flyyer.io UI
 export const schema = V.Object({
   title: V.String(),
   titleColor: V.ColorHex({ default: "#FFFFFF" }),
   titleFont: V.Font({ default: "Inter" }),
 });
-/* https://flayyer.io/v2/tenant/deck/template?title=Hello&titleFont=Roboto */
-/* https://flayyer.ai/v2/project/_/title=Hello&titleFont=Roboto/path */
+/* https://cdn.flyyer.io/render/v2/tenant/deck/template?title=Hello&titleFont=Roboto */
+/* https://cdn.flyyer.io/v2/project/_/title=Hello&titleFont=Roboto/path */
 // It also requires shorter URLs to generate images.
 ```
 
