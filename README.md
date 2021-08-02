@@ -29,7 +29,7 @@ import { Variable as V, Static, Validator } from "@flyyer/variables";
  */
 export const schema = V.Object({
   title: V.String({ description: "Displayed on https://flyyer.io" }),
-  description: V.Optional(V.String()),
+  price: V.Optional(V.Number()),
   image: V.Optional(V.Image({
     description: "Image URL",
     examples: ["https://flyyer.io/logo.png"],
@@ -45,9 +45,10 @@ type Variables = Static<typeof schema>;
 
 export default function Template({ variables }: TemplateProps<Variables>) {
   if (validator.validate(variables)) {
-    const title = variables["title"];
-    const description = variables["description"];
-    const image = variables["image"];
+    const title = variables["title"]; // type is `string`
+    const price = variables["price"]; // type is `number | undefined`
+    const image = variables["image"]; // type is `string | undefined` and has URL format.
+    const font = variables["font"]; // type is `string | undefined`, use with @flyyer/use-googlefonts
     // ...
   }
 }
@@ -59,7 +60,7 @@ Using the same schema from the previous example, if you prefer a more optimistic
 
 ```ts
 const {
-  data: { image, description, image }
+  data: { title, price, image }
 } = validator.parse(variables);
 
 // Optimistic path but variables might not be compliant with the schema.
@@ -97,7 +98,7 @@ You should be able to cover most cases with these types.
 
 On flyyer.io many template previews are rendered using the first provided `examples` value of each property with fallback to `default`.
 
-**The `examples` property must be an array**
+**🚨 The `examples` property must be an array**
 
 ```tsx
 export const schema = V.Object({
@@ -128,7 +129,12 @@ const validator = new Validator(schema);
 
 // props are provided by our systems
 export default function Template({ variables, locale }) {
-  const { data: { currency, price } } = validator.parse(variables);
+  const {
+    data: {
+      currency, // type is `string | undefined`
+      price, // type is `number | undefined`
+    }
+  } = validator.parse(variables);
 
   const formatter = new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -175,10 +181,10 @@ const schema = V.Object({
 
 ## Recommendations
 
-JSON Schemas can be super complex and allow a lot of custom settings. In flyyer.io we recommend sticking to a simple 1-level object for the better final user experience.
+JSON Schemas can be super complex and allow a lot of custom settings. At Flyyer.io we recommend sticking to a simple 1-level object for the better final user experience.
 
 ```ts
-// ⚠️ Works via @flyyer/flyyer and code but not handled by flyyer.io UI
+// ⚠️ Works via @flyyer/flyyer and API but not handled by Flyyer.io UI (dashboard)
 export const schema = V.Object({
   title: V.Object({
     text: V.String(),
@@ -189,7 +195,7 @@ export const schema = V.Object({
 /* https://cdn.flyyer.io/render/v2/tenant/deck/template?title[text]=Hello&title[font]=Roboto */
 /* https://cdn.flyyer.io/v2/project/_/title[text]=Hello&title[font]=Roboto/path */
 
-// ✅ Recommended! works via @flyyer/flyyer and flyyer.io UI
+// ✅ Recommended! works via @flyyer/flyyer, API, and Flyyer.io UI (dashboard)
 export const schema = V.Object({
   title: V.String(),
   titleColor: V.ColorHex({ default: "#FFFFFF" }),
@@ -197,7 +203,7 @@ export const schema = V.Object({
 });
 /* https://cdn.flyyer.io/render/v2/tenant/deck/template?title=Hello&titleFont=Roboto */
 /* https://cdn.flyyer.io/v2/project/_/title=Hello&titleFont=Roboto/path */
-// It also requires shorter URLs to generate images.
+// It also produces shorter URLs to generate images which is good.
 ```
 
 ---
