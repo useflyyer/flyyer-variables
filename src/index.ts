@@ -1,12 +1,38 @@
-import { TypeBuilder, StringKind, TEnumType, CustomOptions, TEnum, EnumKind } from "@sinclair/typebox";
-import type {
+import {
+  CustomOptions,
+  EnumKind,
   Static as TypeBoxStatic,
   StringFormatOption as StringFormatOptionBase,
+  StringKind,
   StringOptions,
+  TEnum,
+  TEnumType,
   TString,
+  TypeBuilder,
 } from "@sinclair/typebox";
 import Ajv, { Options, Schema, ValidateFunction } from "ajv";
 import addFormats, { FormatsPluginOptions } from "ajv-formats";
+
+/**
+ * @example
+ * import { Variable as V, Static } from "@flyyer/variables";
+ * export const schema = V.Object({
+ *   title: V.String({ description: "Displayed on https://flyyer.io" }),
+ *   description: V.Optional(V.String()),
+ *   image: V.Optional(
+ *     V.Image({
+ *       description: "Image URL",
+ *       examples: ["https://flyyer.io/logo.png"],
+ *     }),
+ *   ),
+ * });
+ * type Variables = Static<typeof schema>;
+ * export default function Template(props: TemplateProps<Variables>) {
+ *   const { title, description, image } = props.variables;
+ *   // ...
+ * }
+ */
+export type Static<T> = TypeBoxStatic<T>;
 
 /**
  * Overrides default formats and add custom values.
@@ -140,7 +166,7 @@ export class VariableBuilder extends TypeBuilder {
    * });
    */
   public EnumKeys<T extends TEnumType>(item: T, options: CustomOptions = {}): TEnum<keyof T> {
-    const keys = Object.keys(item).filter((key) => isNaN(key as any)) as (keyof T)[];
+    const keys = Object.keys(item).filter(key => isNaN(key as any)) as (keyof T)[];
     // if (keys.length === 0) {
     //   return { ...options, kind: EnumKind, enum: keys };
     // }
@@ -276,24 +302,3 @@ export class VariableBuilder extends TypeBuilder {
  * }
  */
 export const Variable = new VariableBuilder();
-
-/**
- * @example
- * import { Variable as V, Static } from "@flyyer/variables";
- * export const schema = V.Object({
- *   title: V.String({ description: "Displayed on https://flyyer.io" }),
- *   description: V.Optional(V.String()),
- *   image: V.Optional(
- *     V.Image({
- *       description: "Image URL",
- *       examples: ["https://flyyer.io/logo.png"],
- *     }),
- *   ),
- * });
- * type Variables = Static<typeof schema>;
- * export default function Template(props: TemplateProps<Variables>) {
- *   const { title, description, image } = props.variables;
- *   // ...
- * }
- */
-export type Static<T> = TypeBoxStatic<T>;
