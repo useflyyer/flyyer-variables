@@ -20,8 +20,8 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
+    "start": "tsdx watch --target node",
+    "build": "tsdx build --target node",
     "test": "tsdx test",
     "lint": "eslint '*/**/*.{js,ts,tsx}'",
     "prepare": "tsdx build && husky install",
