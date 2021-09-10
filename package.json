@@ -10,7 +10,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "module": "dist/flyyer-variables.esm.js",
+  "module": "dist/variables.esm.js",
   "sideEffects": false,
   "files": [
     "dist",
