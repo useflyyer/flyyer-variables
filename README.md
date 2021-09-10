@@ -3,6 +3,9 @@
 Helper module to create a `schema` that enables Flyyer to display template's variables on https://flyyer.io for decks and templates.
 
 ```sh
+npm install --save @flyyer/variables
+
+# if you prefer yarn:
 yarn add @flyyer/variables
 ```
 
@@ -19,6 +22,8 @@ Here is what a template with an exported `schema` looks like:
 
 ![Final result on flyyer.io dashboard](.github/assets/dashboard.png)
 
+> Note: Not every JSON-Schema is supported on Flyyer UI, try to use a plain object and avoid complex types such as Union, Object, Array, etc.
+
 ## Usage
 
 ```tsx
@@ -29,7 +34,7 @@ import { Variable as V, Static, Validator } from "@flyyer/variables";
  */
 export const schema = V.Object({
   title: V.String({ description: "Displayed on https://flyyer.io" }),
-  price: V.Optional(V.Number()),
+  price: V.Nullable(V.Number()),
   image: V.Optional(V.Image({
     description: "Image URL",
     examples: ["https://flyyer.io/logo.png"],
@@ -46,7 +51,7 @@ type Variables = Static<typeof schema>;
 export default function Template({ variables }: TemplateProps<Variables>) {
   if (validator.validate(variables)) {
     const title = variables["title"]; // type is `string`
-    const price = variables["price"]; // type is `number | undefined`
+    const price = variables["price"]; // type is `number | null`
     const image = variables["image"]; // type is `string | undefined` and has URL format.
     const font = variables["font"]; // type is `string | undefined`, use with @flyyer/use-googlefonts
     // ...
@@ -80,19 +85,35 @@ if (validator.validate(variables)) {
 
 Most common types with full flyyer.io UI support are:
 
-* `V.String`
-* `V.Integer`
-* `V.Number` for floats
-* `V.Boolean`
-* `V.DateTime`, `V.Date`, and `V.Time` (`V.DateTime` has the best compatibility)
-* `V.URL`
-* `V.Image`
-* `V.Font`
-* `V.ColorHex`
-* `V.Enum`
-* `V.EnumKeys`
+* `V.String()`
+* `V.Integer()`
+* `V.Number()` for floats
+* `V.Boolean()`
+* `V.DateTime()`, `V.Date()`, and `V.Time()` (`V.DateTime()` has the best compatibility)
+* `V.URL()`
+* `V.Image()`
+* `V.Font()`
+* `V.ColorHex()`
+* `V.Enum()`
+* `V.EnumKeys()`
+
+Modifiers:
+
+* `V.Optional()`
+* `V.Null()`
+* `V.Optional(V.Null())`
 
 You should be able to cover most cases with these types.
+
+## Provide default value
+
+Default values are used when incoming variable is undefined.
+
+```tsx
+export const schema = V.Object({
+  title: V.String({ default: "Hello world" }),
+});
+```
 
 ## Provide example values
 

@@ -44,7 +44,7 @@
     }
   ],
   "dependencies": {
-    "@sinclair/typebox": "^0.17.1",
+    "@sinclair/typebox": "=0.18.0",
     "ajv": "^8.6.2",
     "ajv-formats": "^2.1.1"
   },

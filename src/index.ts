@@ -7,7 +7,10 @@ import {
   StringOptions,
   TEnum,
   TEnumType,
+  TNull,
+  TSchema,
   TString,
+  TUnion,
   TypeBuilder,
 } from "@sinclair/typebox";
 import Ajv, { Options, Schema, ValidateFunction } from "ajv";
@@ -106,7 +109,7 @@ export class Validator<U extends Schema, D extends Static<U>> {
   /**
    * Take `variables` and apply defaults, coerce types and return a fresh copy.
    */
-  public parse(variables: unknown) {
+  public parse<Input = unknown>(variables: Input) {
     const validate = this.getSchema();
     const cloned = JSON.parse(JSON.stringify(variables));
     const valid = validate(cloned);
@@ -154,6 +157,19 @@ export class VariableBuilder extends TypeBuilder {
   // Extensions
 
   /**
+   * EXTENDED: Different from `V.Optional`. This will show the variable on Flyyer UI. `Optional` hides them.
+   * @example
+   * import { Variable as V, Validator } from "@flyyer/variables";
+   * export const schema = V.Object({
+   *   background: V.Nullable(V.Image()),
+   *   tint: V.Nullable(V.Optional(V.ColorHex({ title: "Tint color" }))),
+   * });
+   */
+  public Nullable<T extends TSchema>(schema: T): TUnion<[T, TNull]> {
+    return { ...schema, nullable: true } as any; // facade
+  }
+
+  /**
    * EXTENDED: Alternative to `V.Enum` but when you want to **the keys of the enum**.
    * @example
    * import { Variable as V, Validator } from "@flyyer/variables";
@@ -165,7 +181,7 @@ export class VariableBuilder extends TypeBuilder {
    *   modes: V.EnumKeys(Alignment, { default: "X" }),
    * });
    */
-  public EnumKeys<T extends TEnumType>(item: T, options: CustomOptions = {}): TEnum<keyof T> {
+  public EnumKeys<T extends TEnumType>(item: T, options?: CustomOptions): TEnum<keyof T> {
     const keys = Object.keys(item).filter(key => isNaN(key as any)) as (keyof T)[];
     // if (keys.length === 0) {
     //   return { ...options, kind: EnumKind, enum: keys };

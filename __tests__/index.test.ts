@@ -114,6 +114,32 @@ describe("Variable.EnumKeys", () => {
   });
 });
 
+describe("Variable.Nullable", () => {
+  it("produces expected string property", () => {
+    const schema = V.Object({
+      required: V.String(),
+      nullable: V.Nullable(V.String({})),
+      nullableOptional: V.Nullable(V.Optional(V.String({}))),
+      optionalNullable: V.Optional(V.Nullable(V.String({}))),
+    });
+    expect(schema.properties["required"]).not.toHaveProperty("nullable");
+    expect(schema.properties["nullable"]).toHaveProperty("nullable", true);
+    expect(schema.properties["nullableOptional"]).toHaveProperty("nullable", true);
+    expect(schema.properties["optionalNullable"]).toHaveProperty("nullable", true);
+    expect(schema.required).toEqual(["required", "nullable"]);
+    // type Variables = Static<typeof schema>; // TODO: `null` type is now working on test files.
+    const validator = new Validator(schema);
+    expect(validator.parse({}).isValid).toEqual(false);
+    expect(validator.parse({ required: null }).isValid).toEqual(false);
+    expect(validator.parse({ required: undefined }).isValid).toEqual(false);
+    expect(validator.parse({ required: "", nullable: undefined }).isValid).toEqual(false);
+    expect(validator.parse({ required: "", nullable: null }).isValid).toEqual(true);
+    expect(validator.parse({ required: "", nullable: null, nullableOptional: null }).isValid).toEqual(true);
+    expect(validator.parse({ required: "", nullable: null, nullableOptional: undefined }).isValid).toEqual(true);
+    expect(validator.parse({ required: "", nullable: null, nullableOptional: "hola" }).isValid).toEqual(true);
+  });
+});
+
 describe("Variable.Email", () => {
   it("produces expected string property", () => {
     const schema = V.Object({
