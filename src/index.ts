@@ -51,6 +51,10 @@ export type StringFormatOption =
  */
 const REGEX_COLOR_HEX = /^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$/i;
 
+const URI_REFERENCE: StringFormatOption = "uri-reference" as const;
+const MIME_IMAGE = "image/*" as const;
+const MIME_FONT = "font/*" as const;
+
 /**
  * Create an extended instance of AJV with better support for @flyyer/variables.
  * @see Website https://ajv.js.org/
@@ -201,7 +205,7 @@ export class VariableBuilder extends TypeBuilder {
   public URL<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
   ): TString {
-    const format: StringFormatOption = "uri-reference";
+    const format: StringFormatOption = URI_REFERENCE;
     return { format, ...options, kind: StringKind, type: "string" };
   }
 
@@ -209,8 +213,9 @@ export class VariableBuilder extends TypeBuilder {
   public Image<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
   ): TString {
-    const format: StringFormatOption = "uri-reference";
-    return { contentMediaType: "image/*", format, ...options, kind: StringKind, type: "string" };
+    const format: StringFormatOption = URI_REFERENCE;
+
+    return { contentMediaType: MIME_IMAGE, format, ...options, kind: StringKind, type: "string" };
   }
 
   /**
@@ -225,7 +230,7 @@ export class VariableBuilder extends TypeBuilder {
   public Font<TCustomFormatOption extends string>(
     options: StringOptions<StringFormatOption | TCustomFormatOption> = {},
   ): TString {
-    return { contentMediaType: "font/*", ...options, kind: StringKind, type: "string" };
+    return { contentMediaType: MIME_FONT, ...options, kind: StringKind, type: "string" };
   }
 
   /**
@@ -318,3 +323,31 @@ export class VariableBuilder extends TypeBuilder {
  * }
  */
 export const Variable = new VariableBuilder();
+
+/**
+ * Check type of variables
+ */
+
+export class Is {
+  // protected static validate(variable: unknown): any {
+  //   if (!variable) throw TypeError("Missing argument");
+  // }
+  public static Nullable(variable: unknown): boolean {
+    // @ts-expect-error Ignore type warning
+    return variable["nullable"] === true;
+  }
+  public static Image(variable: unknown): boolean {
+    // @ts-expect-error Ignore type warning
+    return this.URL(variable) && variable["contentMediaType"] === MIME_IMAGE;
+  }
+  public static URL(variable: unknown): boolean {
+    if (!variable) throw TypeError("Missing argument");
+    // @ts-expect-error Ignore type warning
+    return variable["type"] === "string" && variable["format"] === URI_REFERENCE;
+  }
+  public static Font(variable: unknown): boolean {
+    if (!variable) throw TypeError("Missing argument");
+    // @ts-expect-error Ignore type warning
+    return variable["type"] === "string" && variable["contentMediaType"] === MIME_FONT;
+  }
+}

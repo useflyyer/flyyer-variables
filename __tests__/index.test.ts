@@ -1,4 +1,4 @@
-import { Variable as V, Static, Validator } from "../src";
+import { Variable as V, Static, Validator, Is } from "../src";
 
 describe("StringFormatOption", () => {
   it("allow custom 'formats'", () => {
@@ -122,6 +122,11 @@ describe("Variable.Nullable", () => {
       nullableOptional: V.Nullable(V.Optional(V.String({}))),
       optionalNullable: V.Optional(V.Nullable(V.String({}))),
     });
+    expect(Is.Nullable(schema.properties["required"])).toEqual(false);
+    expect(Is.Nullable(schema.properties["nullable"])).toEqual(true);
+    expect(Is.Nullable(schema.properties["nullableOptional"])).toEqual(true);
+    expect(Is.Nullable(schema.properties["optionalNullable"])).toEqual(true);
+
     expect(schema.properties["required"]).not.toHaveProperty("nullable");
     expect(schema.properties["nullable"]).toHaveProperty("nullable", true);
     expect(schema.properties["nullableOptional"]).toHaveProperty("nullable", true);
@@ -164,8 +169,12 @@ describe("Variable.URL", () => {
   it("produces expected string property", () => {
     const schema = V.Object({
       url: V.URL({ description: "Just an URL" }),
+      title: V.String(),
     });
     expect(schema.properties.url.format).toEqual("uri-reference");
+    expect(Is.URL(schema.properties.title)).toEqual(false);
+    expect(Is.URL(schema.properties.url)).toEqual(true);
+    expect(Is.Image(schema.properties.url)).toEqual(false);
   });
 });
 
@@ -176,6 +185,8 @@ describe("Variable.Image", () => {
     });
     expect(schema.properties.image.contentMediaType).toEqual("image/*");
     expect(schema.properties.image.format).toEqual("uri-reference");
+    expect(Is.URL(schema.properties.image)).toEqual(true);
+    expect(Is.Image(schema.properties.image)).toEqual(true);
   });
 });
 
@@ -185,6 +196,7 @@ describe("Variable.Font", () => {
       font: V.Font({ default: "Inter", examples: ["Roboto", "Avro"] }),
     });
     expect(schema.properties.font.contentMediaType).toEqual("font/*");
+    expect(Is.Font(schema.properties.font)).toEqual(true);
   });
 });
 
